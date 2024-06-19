@@ -1,8 +1,8 @@
 install:
 	npm ci
-lint:
-	npx eslint .
 dev:
-	npx webpack serve
+	npm run serve
 build:
 	NODE_ENV=production npx webpack
+lint:
+	npx eslint .
