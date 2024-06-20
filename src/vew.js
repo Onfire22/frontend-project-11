@@ -11,8 +11,8 @@ const render = (elems, i18nextInstance) => (path, value) => {
     }
     if (value === 'success') {
       elems.input.classList.remove('is-invalid');
-      form.reset();
-      input.focus();
+      elems.form.reset();
+      elems.input.focus();
     }
     if (value === 'feeling') {
       elems.input.classList.remove('is-invalid');

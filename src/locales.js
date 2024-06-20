@@ -5,6 +5,10 @@ const ru = {
     label: 'Ссылка RSS',
     btn_add: 'Добавить',
     hint: 'Пример: https://lorem-rss.hexlet.app/feed',
+    errors: {
+      url: 'Ссылка должна быть валидным URL',
+      uniq: 'RSS уже существует',
+    },
   },
 };
 

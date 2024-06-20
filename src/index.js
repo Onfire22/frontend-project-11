@@ -4,9 +4,17 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import render from './vew.js';
-import resources from './translations.js';
+import resources from './locales.js';
 
 const makeValidation = (arr, data) => {
+  yup.setLocale({
+    mixed: {
+      notOneOf: () => ({ key: 'errors.uniq' }),
+    },
+    string: {
+      url: () => ({ key: 'errors.url' }),
+    },
+  });
   const scheme = yup.string().url().notOneOf(arr);
   return scheme.validate(data);
 };
@@ -19,14 +27,16 @@ const app = (elems, state, i18nextInstance) => {
   });
   elems.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const promise = makeValidation(watchedState.feeds, elems.input.value);
+    const promise = makeValidation(watchedState.feeds, elems.input.value, i18nextInstance);
     promise.then((data) => {
       watchedState.status = 'success';
       watchedState.feeds.push(data);
     })
       .catch((err) => {
         watchedState.status = 'failed';
-        watchedState.error = err.key; // todo errors
+        err.errors.forEach((error) => {
+          watchedState.error = i18nextInstance.t(error.key);
+        });
       });
   });
 };
