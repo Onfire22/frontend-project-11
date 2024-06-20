@@ -1,15 +1,21 @@
-const render = (input, form) => (path, value, previousValue) => {
+const render = (elems, i18nextInstance) => (path, value) => {
   if (path === 'status') {
+    if (value === 'initial') {
+      elems.staticElems.forEach((elName) => {
+        const element = document.querySelector(`.${elName}`);
+        element.textContent = i18nextInstance.t(elName);
+      });
+    }
     if (value === 'failed') {
-      input.classList.add('is-invalid');
+      elems.input.classList.add('is-invalid');
     }
     if (value === 'success') {
-      input.classList.remove('is-invalid');
+      elems.input.classList.remove('is-invalid');
       form.reset();
       input.focus();
     }
     if (value === 'feeling') {
-      input.classList.remove('is-invalid');
+      elems.input.classList.remove('is-invalid');
     }
   }
 };

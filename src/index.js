@@ -4,35 +4,22 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import render from './vew.js';
+import resources from './translations.js';
 
 const makeValidation = (arr, data) => {
   const scheme = yup.string().url().notOneOf(arr);
   return scheme.validate(data);
 };
 
-const init = async () => {
-  const i18nextInstance = i18next.createInstance();
-  await i18nextInstance.init({
-    lng: 'ru',
-    resources: '1',
-  });
-};
-
-const app = () => {
-  const form = document.querySelector('.rss-form');
-  const input = document.querySelector('#url-input');
-  const state = {
-    feeds: [],
-    status: 'feeling', // failed, success
-    error: null,
-  };
-  const watchedState = onChange(state, render(input, form));
-  input.addEventListener('input', () => {
+const app = (elems, state, i18nextInstance) => {
+  const watchedState = onChange(state, render(elems, i18nextInstance));
+  watchedState.status = 'initial';
+  elems.input.addEventListener('input', () => {
     watchedState.status = 'feeling';
   });
-  form.addEventListener('submit', (e) => {
+  elems.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const promise = makeValidation(watchedState.feeds, input.value);
+    const promise = makeValidation(watchedState.feeds, elems.input.value);
     promise.then((data) => {
       watchedState.status = 'success';
       watchedState.feeds.push(data);
@@ -44,4 +31,23 @@ const app = () => {
   });
 };
 
-app();
+const init = async () => {
+  const i18nextInstance = i18next.createInstance();
+  const elems = {
+    form: document.querySelector('.rss-form'),
+    input: document.querySelector('#url-input'),
+    staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],
+  };
+  const state = {
+    feeds: [],
+    status: '', // initial, failed, success
+    error: null,
+  };
+  await i18nextInstance.init({
+    lng: 'ru',
+    resources,
+  });
+  app(elems, state, i18nextInstance);
+};
+
+init();
