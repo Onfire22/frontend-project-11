@@ -3,10 +3,53 @@ import 'bootstrap';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
+import axios from 'axios';
 import render from './vew.js';
 import resources from './locales.js';
 
-const makeValidation = (arr, data) => {
+const buildUrl = (url) => {
+  const proxyUrl = new URL('https://allorigins.hexlet.app/');
+  proxyUrl.pathname = 'get';
+  proxyUrl.searchParams.set('disableCache', 'true');
+  proxyUrl.searchParams.append('url', url);
+  return proxyUrl.toString();
+};
+
+const request = async (url) => {
+  const targetUrl = buildUrl(url);
+  const response = await axios.get(targetUrl);
+  const data = response.data.contents;
+  const parser = new DOMParser();
+  return parser.parseFromString(data, 'text/xml');
+};
+
+request('https://lorem-rss.hexlet.app/feed');
+
+const parser = (html) => {
+  const channel = html.querySelector('channel');
+  const title = channel.querySelector('title');
+  const titleContent = title.textContent;
+  const description = channel.querySelector('description');
+  const descriptionContent = description.textContent;
+  const link = channel.querySelector('link');
+  const linkContent = link.textContent;
+  const items = channel.querySelectorAll('item');
+  const posts = Array.from(items).map((item) => {
+    const feedTitle = item.querySelector('title');
+    const feedTitleContent = feedTitle.textContent;
+    const feedDescription = item.querySelector('description');
+    const feedDescriptionContent = feedDescription.textContent;
+    const feedLink = item.querySelector('link');
+    const feedLinkContent = feedLink.textContent;
+    return { feedTitleContent, feedDescriptionContent, feedLinkContent };
+  });
+  return {
+    feed: { titleContent, descriptionContent, linkContent },
+    posts,
+  };
+};
+
+const makeValidation = (arr, data) => { // -> helpers.js
   yup.setLocale({
     mixed: {
       notOneOf: () => ({ key: 'errors.uniq' }),
