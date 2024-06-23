@@ -6,50 +6,10 @@ import i18next from 'i18next';
 import axios from 'axios';
 import render from './vew.js';
 import resources from './locales.js';
+import buildUrl from './helpers.js';
+import parseRss from './parser.js';
 
-const buildUrl = (url) => {
-  const proxyUrl = new URL('https://allorigins.hexlet.app/');
-  proxyUrl.pathname = 'get';
-  proxyUrl.searchParams.set('disableCache', 'true');
-  proxyUrl.searchParams.append('url', url);
-  return proxyUrl.toString();
-};
-
-const request = async (url) => {
-  const targetUrl = buildUrl(url);
-  const response = await axios.get(targetUrl);
-  const data = response.data.contents;
-  const parser = new DOMParser();
-  return parser.parseFromString(data, 'text/xml');
-};
-
-request('https://lorem-rss.hexlet.app/feed');
-
-const parser = (html) => {
-  const channel = html.querySelector('channel');
-  const title = channel.querySelector('title');
-  const titleContent = title.textContent;
-  const description = channel.querySelector('description');
-  const descriptionContent = description.textContent;
-  const link = channel.querySelector('link');
-  const linkContent = link.textContent;
-  const items = channel.querySelectorAll('item');
-  const posts = Array.from(items).map((item) => {
-    const feedTitle = item.querySelector('title');
-    const feedTitleContent = feedTitle.textContent;
-    const feedDescription = item.querySelector('description');
-    const feedDescriptionContent = feedDescription.textContent;
-    const feedLink = item.querySelector('link');
-    const feedLinkContent = feedLink.textContent;
-    return { feedTitleContent, feedDescriptionContent, feedLinkContent };
-  });
-  return {
-    feed: { titleContent, descriptionContent, linkContent },
-    posts,
-  };
-};
-
-const makeValidation = (arr, data) => { // -> helpers.js
+const isValide = (arr, data) => { // -> helpers.js
   yup.setLocale({
     mixed: {
       notOneOf: () => ({ key: 'errors.uniq' }),
@@ -70,16 +30,14 @@ const app = (elems, state, i18nextInstance) => {
   });
   elems.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const promise = makeValidation(watchedState.feeds, elems.input.value, i18nextInstance);
-    promise.then((data) => {
-      watchedState.status = 'success';
-      watchedState.feeds.push(data);
-    })
-      .catch((err) => {
-        watchedState.status = 'failed';
-        err.errors.forEach((error) => {
-          watchedState.error = i18nextInstance.t(error.key);
-        });
+    const userUrl = elems.input.value;
+    const proxyUrl = buildUrl(userUrl);
+    const validePromise = isValide(watchedState.feeds, elems.input.value, i18nextInstance);
+    validePromise.then(() => axios.get(proxyUrl))
+      .then((response) => parseRss(response.data.contents))
+      .then(({ feed, posts }) => {
+        watchedState.feeds.push(feed);
+        watchedState.posts.push(posts); // toDo: state
       });
   });
 };
@@ -93,7 +51,9 @@ const init = async () => {
   };
   const state = {
     feeds: [],
+    posts: [],
     status: '', // initial, failed, success
+    valide: '',
     error: null,
   };
   await i18nextInstance.init({
