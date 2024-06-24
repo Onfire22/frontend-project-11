@@ -4,12 +4,13 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
+import { uniqueId } from 'lodash';
 import render from './vew.js';
 import resources from './locales.js';
 import buildUrl from './helpers.js';
 import parseRss from './parser.js';
 
-const isValide = (arr, data) => { // -> helpers.js
+const isValide = (arr, data) => {
   yup.setLocale({
     mixed: {
       notOneOf: () => ({ key: 'errors.uniq' }),
@@ -21,7 +22,7 @@ const isValide = (arr, data) => { // -> helpers.js
   const scheme = yup.string().url().notOneOf(arr);
   return scheme.validate(data);
 };
-
+// toDo: add global states
 const app = (elems, state, i18nextInstance) => {
   const watchedState = onChange(state, render(elems, i18nextInstance));
   watchedState.status = 'initial';
@@ -32,7 +33,7 @@ const app = (elems, state, i18nextInstance) => {
     e.preventDefault();
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
-    const validePromise = isValide(watchedState.feeds, elems.input.value);
+    const validePromise = isValide(watchedState.links, elems.input.value);
     validePromise.then(() => {
       watchedState.valide = true;
       watchedState.error = null;
@@ -47,8 +48,11 @@ const app = (elems, state, i18nextInstance) => {
       .then((response) => {
         try {
           const { feed, posts } = parseRss(response.data.contents);
+          const id = uniqueId();
+          feed.id = id;
+          watchedState.links.push(userUrl);
           watchedState.feeds.push(feed);
-          watchedState.posts.push(posts);
+          watchedState.posts.push({ id, posts });
         } catch (error) {
           watchedState.error = i18nextInstance.t(error.message);
         }
@@ -70,6 +74,7 @@ const init = async () => {
   const state = {
     feeds: [],
     posts: [],
+    links: [],
     status: '', // initial, failed, success
     valide: '',
     error: null,
