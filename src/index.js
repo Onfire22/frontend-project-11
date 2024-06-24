@@ -32,13 +32,22 @@ const app = (elems, state, i18nextInstance) => {
     e.preventDefault();
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
-    const validePromise = isValide(watchedState.feeds, elems.input.value, i18nextInstance);
-    validePromise.then(() => axios.get(proxyUrl))
-      .then((response) => parseRss(response.data.contents))
+    const validePromise = isValide(watchedState.feeds, elems.input.value);
+    validePromise.then(() => {
+      watchedState.valide = true;
+      watchedState.error = null;
+    })
+      .catch((e) => {
+        watchedState.valide = false;
+        e.errors.forEach((error) => {
+          watchedState.error = i18nextInstance.t(error.key);
+        });
+      })
+      /*.then((response) => parseRss(response.data.contents))
       .then(({ feed, posts }) => {
         watchedState.feeds.push(feed);
         watchedState.posts.push(posts); // toDo: state
-      });
+      });*/
   });
 };
 
