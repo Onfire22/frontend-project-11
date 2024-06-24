@@ -5,6 +5,13 @@ const ru = {
     label: 'Ссылка RSS',
     btn_add: 'Добавить',
     hint: 'Пример: https://lorem-rss.hexlet.app/feed',
+    posts: 'Посты',
+    feeds: 'Фиды',
+    addBtn: 'Просмотр',
+    modal: {
+      read: 'Читать полностью',
+      close: 'Закрыть',
+    },
     errors: {
       url: 'Ссылка должна быть валидным URL',
       uniq: 'RSS уже существует',

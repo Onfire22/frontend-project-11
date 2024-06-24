@@ -53,12 +53,15 @@ const app = (elems, state, i18nextInstance) => {
           watchedState.links.push(userUrl);
           watchedState.feeds.push(feed);
           watchedState.posts.push({ id, posts });
+          watchedState.status = 'success';
         } catch (error) {
+          watchedState.status = 'failed';
           watchedState.error = i18nextInstance.t(error.message);
         }
       })
       .catch((err) => {
         err.message = i18nextInstance.t('errors.network');
+        watchedState.status = 'failed';
         watchedState.error = err.message;
       });
   });
@@ -69,6 +72,13 @@ const init = async () => {
   const elems = {
     form: document.querySelector('.rss-form'),
     input: document.querySelector('#url-input'),
+    feedback: document.querySelector('.feedback'),
+    posts: document.querySelector('.posts'),
+    feeds: document.querySelector('.feeds'),
+    card: document.createElement('div'),
+    cardBody: document.createElement('div'),
+    cardTitle: document.createElement('h2'),
+    list: document.createElement('ul'),
     staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],
   };
   const state = {
