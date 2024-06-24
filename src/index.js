@@ -43,11 +43,14 @@ const app = (elems, state, i18nextInstance) => {
           watchedState.error = i18nextInstance.t(error.key);
         });
       })
-      /*.then((response) => parseRss(response.data.contents))
+      .then(() => axios.get(proxyUrl))
+      .then((response) => parseRss(response.data.contents))
       .then(({ feed, posts }) => {
         watchedState.feeds.push(feed);
         watchedState.posts.push(posts); // toDo: state
-      });*/
+        console.log(state)
+      })
+      .catch((e) => console.log(e));
   });
 };
 
