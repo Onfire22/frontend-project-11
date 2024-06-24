@@ -37,20 +37,22 @@ const app = (elems, state, i18nextInstance) => {
       watchedState.valide = true;
       watchedState.error = null;
     })
-      .catch((e) => {
+      .catch((err) => {
         watchedState.valide = false;
-        e.errors.forEach((error) => {
+        err.errors.forEach((error) => {
           watchedState.error = i18nextInstance.t(error.key);
         });
       })
       .then(() => axios.get(proxyUrl))
-      .then((response) => parseRss(response.data.contents))
-      .then(({ feed, posts }) => {
+      .then((response) => {
+        const { feed, posts } = parseRss(response.data.contents);
         watchedState.feeds.push(feed);
-        watchedState.posts.push(posts); // toDo: state
-        console.log(state)
+        watchedState.posts.push(posts);
       })
-      .catch((e) => console.log(e));
+      .catch((err) => {
+        err.message = i18nextInstance.t('errors.network');
+        watchedState.error = err.message;
+      });
   });
 };
 
