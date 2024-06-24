@@ -45,9 +45,13 @@ const app = (elems, state, i18nextInstance) => {
       })
       .then(() => axios.get(proxyUrl))
       .then((response) => {
-        const { feed, posts } = parseRss(response.data.contents);
-        watchedState.feeds.push(feed);
-        watchedState.posts.push(posts);
+        try {
+          const { feed, posts } = parseRss(response.data.contents);
+          watchedState.feeds.push(feed);
+          watchedState.posts.push(posts);
+        } catch (error) {
+          watchedState.error = i18nextInstance.t(error.message);
+        }
       })
       .catch((err) => {
         err.message = i18nextInstance.t('errors.network');
