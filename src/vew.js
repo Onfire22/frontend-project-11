@@ -13,9 +13,7 @@ const renderError = (elems, i18nextInstance, state) => {
   elems.feedback.classList.add('text-danger');
   elems.input.classList.add('is-invalid');
   elems.feedback.textContent = '';
-  console.log(state)
-  console.log(state.error)
-  elems.feedback.textContent = i18nextInstance.t(state.error);
+  elems.feedback.textContent = i18nextInstance.t(`errors.${state.error}`);
 };
 
 const render = (elems, i18nextInstance, state) => (path, value) => {

@@ -22,7 +22,7 @@ const isValide = (arr, data) => {
   const scheme = yup.string().url().notOneOf(arr);
   return scheme.validate(data);
 };
-// toDo: add global states
+
 const app = (elems, state, i18nextInstance) => {
   const watchedState = onChange(state, render(elems, i18nextInstance, state));
   watchedState.status = 'initial';
@@ -38,10 +38,10 @@ const app = (elems, state, i18nextInstance) => {
       watchedState.error = null;
     })
       .catch((err) => {
-        watchedState.status = 'failed';
         err.errors.forEach((error) => {
           watchedState.error = error.key;
         });
+        watchedState.status = 'failed';
       })
       .then(() => axios.get(proxyUrl))
       .then((response) => {
@@ -54,13 +54,13 @@ const app = (elems, state, i18nextInstance) => {
           watchedState.posts.push({ id, posts });
           watchedState.status = 'success';
         } catch (error) {
-          watchedState.status = 'failed';
           watchedState.error = error.message;
+          watchedState.status = 'failed';
         }
       })
       .catch((err) => {
-        watchedState.status = 'failed';
         watchedState.error = err.name;
+        watchedState.status = 'failed';
       });
   });
 };
