@@ -24,7 +24,7 @@ const isValide = (arr, data) => {
 };
 // toDo: add global states
 const app = (elems, state, i18nextInstance) => {
-  const watchedState = onChange(state, render(elems, i18nextInstance));
+  const watchedState = onChange(state, render(elems, i18nextInstance, state));
   watchedState.status = 'initial';
   elems.input.addEventListener('input', () => {
     watchedState.status = 'feeling';
@@ -35,11 +35,10 @@ const app = (elems, state, i18nextInstance) => {
     const proxyUrl = buildUrl(userUrl);
     const validePromise = isValide(watchedState.links, elems.input.value);
     validePromise.then(() => {
-      watchedState.valide = true;
       watchedState.error = null;
     })
       .catch((err) => {
-        watchedState.valide = false;
+        watchedState.status = 'failed';
         err.errors.forEach((error) => {
           watchedState.error = error.key;
         });
@@ -85,7 +84,6 @@ const init = async () => {
     posts: [],
     links: [],
     status: '', // initial, failed, success
-    valide: '',
     error: null,
   };
   await i18nextInstance.init({
