@@ -8,7 +8,7 @@ const ru = {
     successMsg: 'RSS успешно загружен',
     posts: 'Посты',
     feeds: 'Фиды',
-    addBtn: 'Просмотр',
+    viewBtn: 'Просмотр',
     modal: {
       read: 'Читать полностью',
       close: 'Закрыть',

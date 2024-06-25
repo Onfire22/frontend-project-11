@@ -51,7 +51,10 @@ const app = (elems, state, i18nextInstance) => {
           feed.id = id;
           watchedState.links.push(userUrl);
           watchedState.feeds.push(feed);
-          watchedState.posts.push({ id, posts });
+          posts.forEach((post) => {
+            post.id = id;
+            watchedState.posts.push(post);
+          });
           watchedState.status = 'success';
         } catch (error) {
           watchedState.error = error.message;
@@ -71,6 +74,7 @@ const init = async () => {
     form: document.querySelector('.rss-form'),
     input: document.querySelector('#url-input'),
     feedback: document.querySelector('.feedback'),
+    template: document.querySelector('#card_template'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
     staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],

@@ -10,13 +10,10 @@ const parseRss = (html) => {
   const description = channel.querySelector('description').textContent;
   const items = channel.querySelectorAll('item');
   const posts = Array.from(items).map((item) => {
-    const feedTitle = item.querySelector('title');
-    const feedTitleContent = feedTitle.textContent;
-    const feedDescription = item.querySelector('description');
-    const feedDescriptionContent = feedDescription.textContent;
-    const feedLink = item.querySelector('link');
-    const feedLinkContent = feedLink.textContent;
-    return { feedTitleContent, feedDescriptionContent, feedLinkContent };
+    const postTitle = item.querySelector('title').textContent;
+    const postDescription = item.querySelector('description').textContent;
+    const postLink = item.querySelector('link').textContent;
+    return { postTitle, postDescription, postLink };
   });
   return {
     feed: { title, description },

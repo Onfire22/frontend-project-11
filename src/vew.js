@@ -17,16 +17,12 @@ const renderError = (elems, i18nextInstance, state) => {
 };
 
 const renderFeeds = (elems, i18nextInstance, state) => {
-  const container = document.createElement('div');
-  container.classList.add('card', 'border-0');
-  const card = document.createElement('div');
-  card.classList.add('card-body');
-  const cardTitle = document.createElement('h2');
-  cardTitle.classList.add('card-title', 'h4');
+  const cardTemplate = elems.template.content;
+  const feedsCard = cardTemplate.querySelector('.card').cloneNode(true);
+  const cardTitle = feedsCard.querySelector('.card-title');
+  const list = feedsCard.querySelector('.list-group');
   cardTitle.textContent = i18nextInstance.t('feeds');
-  const list = document.createElement('ul');
-  list.classList.add('list-group-item', 'border-0', 'border-end-0');
-  const listItems = state.feeds.map(({ title, description }) => {
+  state.feeds.forEach(({ title, description }) => {
     const listItem = document.createElement('li');
     listItem.classList.add('list-group-item', 'border-0', 'border-end-0');
     const listTitle = document.createElement('h3');
@@ -36,13 +32,39 @@ const renderFeeds = (elems, i18nextInstance, state) => {
     listText.classList.add('m-0', 'small', 'text-black-50');
     listText.textContent = description;
     listItem.append(listTitle, listText);
-    return listItem;
+    list.append(listItem);
   });
-  list.append(...listItems);
-  card.append(cardTitle);
-  container.append(card, list);
   elems.feeds.innerHTML = '';
-  elems.feeds.append(container);
+  elems.feeds.append(feedsCard);
+};
+
+const renderPosts = (elems, i18nextInstance, state) => {
+  const cardTemplate = elems.template.content;
+  const feedsCard = cardTemplate.querySelector('.card').cloneNode(true);
+  const cardTitle = feedsCard.querySelector('.card-title');
+  cardTitle.textContent = i18nextInstance.t('posts');
+  const list = feedsCard.querySelector('.list-group');
+  state.posts.forEach((post) => {
+    const { id, postTitle, postLink } = post;
+    const listItem = document.createElement('li');
+    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    const link = document.createElement('a');
+    link.classList.add('fw-bold');
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
+    link.setAttribute('href', postLink);
+    link.dataset.id = id;
+    link.textContent = postTitle;
+    const button = document.createElement('button');
+    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    button.setAttribute('type', 'button');
+    button.textContent = i18nextInstance.t('viewBtn');
+    button.dataset.id = id;
+    listItem.append(link, button);
+    list.append(listItem);
+  });
+  elems.posts.innerHTML = '';
+  elems.posts.append(feedsCard);
 };
 
 const render = (elems, i18nextInstance, state) => (path, value) => {
@@ -59,6 +81,7 @@ const render = (elems, i18nextInstance, state) => (path, value) => {
     if (value === 'success') {
       renderSuccess(elems, i18nextInstance);
       renderFeeds(elems, i18nextInstance, state);
+      renderPosts(elems, i18nextInstance, state);
     }
   }
 };
