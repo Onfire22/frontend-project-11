@@ -8,7 +8,6 @@ const parseRss = (html) => {
   const channel = data.querySelector('channel');
   const title = channel.querySelector('title').textContent;
   const description = channel.querySelector('description').textContent;
-  const link = channel.querySelector('link').textContent;
   const items = channel.querySelectorAll('item');
   const posts = Array.from(items).map((item) => {
     const feedTitle = item.querySelector('title');
@@ -20,7 +19,7 @@ const parseRss = (html) => {
     return { feedTitleContent, feedDescriptionContent, feedLinkContent };
   });
   return {
-    feed: { title, description, link },
+    feed: { title, description },
     posts,
   };
 };

@@ -73,17 +73,13 @@ const init = async () => {
     feedback: document.querySelector('.feedback'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
-    card: document.createElement('div'),
-    cardBody: document.createElement('div'),
-    cardTitle: document.createElement('h2'),
-    list: document.createElement('ul'),
     staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],
   };
   const state = {
     feeds: [],
     posts: [],
     links: [],
-    status: '', // initial, failed, success
+    status: '', // initial, pending!!!!!!, failed, success
     error: null,
   };
   await i18nextInstance.init({

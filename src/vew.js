@@ -16,6 +16,35 @@ const renderError = (elems, i18nextInstance, state) => {
   elems.feedback.textContent = i18nextInstance.t(`errors.${state.error}`);
 };
 
+const renderFeeds = (elems, i18nextInstance, state) => {
+  const container = document.createElement('div');
+  container.classList.add('card', 'border-0');
+  const card = document.createElement('div');
+  card.classList.add('card-body');
+  const cardTitle = document.createElement('h2');
+  cardTitle.classList.add('card-title', 'h4');
+  cardTitle.textContent = i18nextInstance.t('feeds');
+  const list = document.createElement('ul');
+  list.classList.add('list-group-item', 'border-0', 'border-end-0');
+  const listItems = state.feeds.map(({ title, description }) => {
+    const listItem = document.createElement('li');
+    listItem.classList.add('list-group-item', 'border-0', 'border-end-0');
+    const listTitle = document.createElement('h3');
+    listTitle.classList.add('h6', 'm-0');
+    listTitle.textContent = title;
+    const listText = document.createElement('p');
+    listText.classList.add('m-0', 'small', 'text-black-50');
+    listText.textContent = description;
+    listItem.append(listTitle, listText);
+    return listItem;
+  });
+  list.append(...listItems);
+  card.append(cardTitle);
+  container.append(card, list);
+  elems.feeds.innerHTML = '';
+  elems.feeds.append(container);
+};
+
 const render = (elems, i18nextInstance, state) => (path, value) => {
   if (path === 'status') {
     if (value === 'initial') {
@@ -25,12 +54,11 @@ const render = (elems, i18nextInstance, state) => (path, value) => {
       });
     }
     if (value === 'failed') {
-      console.log('fails')
       renderError(elems, i18nextInstance, state);
     }
     if (value === 'success') {
-      console.log('success')
       renderSuccess(elems, i18nextInstance);
+      renderFeeds(elems, i18nextInstance, state);
     }
   }
 };
