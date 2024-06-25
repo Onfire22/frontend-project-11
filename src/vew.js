@@ -1,3 +1,14 @@
+const renderSuccess = (elems, i18nextInstance) => {
+  elems.feedback.textContent = '';
+  elems.input.classList.remove('is-invalid');
+  elems.feedback.textContent = i18nextInstance.t('successMsg');
+};
+
+const renderError = (elems, i18nextInstance) => {
+  elems.feedback.textContent = '';
+  elems.input.classList.remove('is-invalid');
+};
+
 const render = (elems, i18nextInstance) => (path, value) => {
   if (path === 'status') {
     if (value === 'initial') {

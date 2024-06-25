@@ -5,6 +5,7 @@ const ru = {
     label: 'Ссылка RSS',
     btn_add: 'Добавить',
     hint: 'Пример: https://lorem-rss.hexlet.app/feed',
+    successMsg: 'RSS успешно загружен',
     posts: 'Посты',
     feeds: 'Фиды',
     addBtn: 'Просмотр',
@@ -14,9 +15,9 @@ const ru = {
     },
     errors: {
       url: 'Ссылка должна быть валидным URL',
-      uniq: 'RSS уже существует',
-      network: 'Ошибка сети',
-      valideRss: 'Ресурс не содержит валидный RSS',
+      unique: 'RSS уже существует',
+      AxiosError: 'Ошибка сети', // done
+      valideRss: 'Ресурс не содержит валидный RSS', // done
     },
   },
 };

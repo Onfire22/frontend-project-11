@@ -3,7 +3,7 @@ const parseRss = (html) => {
   const data = parser.parseFromString(html, 'text/xml');
   const parsererror = data.querySelector('parsererror');
   if (parsererror) {
-    throw new Error('errors.valideRss');
+    throw new Error('valideRss');
   }
   const channel = data.querySelector('channel');
   const title = channel.querySelector('title').textContent;

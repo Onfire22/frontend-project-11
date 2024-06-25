@@ -13,10 +13,10 @@ import parseRss from './parser.js';
 const isValide = (arr, data) => {
   yup.setLocale({
     mixed: {
-      notOneOf: () => ({ key: 'errors.uniq' }),
+      notOneOf: () => ({ key: 'unique' }),
     },
     string: {
-      url: () => ({ key: 'errors.url' }),
+      url: () => ({ key: 'url' }),
     },
   });
   const scheme = yup.string().url().notOneOf(arr);
@@ -41,7 +41,7 @@ const app = (elems, state, i18nextInstance) => {
       .catch((err) => {
         watchedState.valide = false;
         err.errors.forEach((error) => {
-          watchedState.error = i18nextInstance.t(error.key);
+          watchedState.error = error.key;
         });
       })
       .then(() => axios.get(proxyUrl))
@@ -56,13 +56,12 @@ const app = (elems, state, i18nextInstance) => {
           watchedState.status = 'success';
         } catch (error) {
           watchedState.status = 'failed';
-          watchedState.error = i18nextInstance.t(error.message);
+          watchedState.error = error.message;
         }
       })
       .catch((err) => {
-        err.message = i18nextInstance.t('errors.network');
         watchedState.status = 'failed';
-        watchedState.error = err.message;
+        watchedState.error = err.name;
       });
   });
 };
