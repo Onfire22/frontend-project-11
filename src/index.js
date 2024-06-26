@@ -37,13 +37,10 @@ const app = (elems, state, i18nextInstance) => {
     validePromise.then(() => {
       watchedState.error = null;
     })
-      .catch((err) => {
-        err.errors.forEach((error) => {
-          watchedState.error = error.key;
-        });
-        watchedState.status = 'failed';
+      .then(() => {
+        watchedState.status = 'pending';
+        return axios.get(proxyUrl);
       })
-      .then(() => axios.get(proxyUrl))
       .then((response) => {
         try {
           const { feed, posts } = parseRss(response.data.contents);
@@ -62,7 +59,7 @@ const app = (elems, state, i18nextInstance) => {
         }
       })
       .catch((err) => {
-        watchedState.error = err.name;
+        watchedState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
         watchedState.status = 'failed';
       });
   });
@@ -77,6 +74,7 @@ const init = async () => {
     template: document.querySelector('#card_template'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
+    mainBtn: document.querySelector('.btn_add'),
     staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],
   };
   const state = {

@@ -15,7 +15,7 @@ const ru = {
     },
     errors: {
       url: 'Ссылка должна быть валидным URL',
-      unique: 'RSS уже существует',
+      notOneOf: 'RSS уже существует',
       AxiosError: 'Ошибка сети',
       valideRss: 'Ресурс не содержит валидный RSS',
     },
