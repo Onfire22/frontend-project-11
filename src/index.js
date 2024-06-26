@@ -26,6 +26,25 @@ const isValide = (arr, data) => {
 const app = (elems, state, i18nextInstance) => {
   const watchedState = onChange(state, render(elems, i18nextInstance, state));
   watchedState.status = 'initial';
+  const updatePosts = (feed, proxyUrl) => {
+    watchedState.status = '';
+    axios.get(proxyUrl)
+      .then((response) => {
+        const { posts } = parseRss(response.data.contents);
+        posts.filter((post) => !watchedState.posts
+          .some((oldPost) => post.postTitle === oldPost.postTitle))
+          .forEach((post) => {
+            post.id = feed.id;
+            watchedState.posts.unshift(post);
+          });
+        watchedState.status = 'success';
+      })
+      .then(() => setTimeout(updatePosts, 5000, feed, proxyUrl))
+      .catch((err) => {
+        watchedState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
+        watchedState.status = 'failed';
+      });
+  };
   elems.input.addEventListener('input', () => {
     watchedState.status = 'feeling';
   });
@@ -57,6 +76,11 @@ const app = (elems, state, i18nextInstance) => {
           watchedState.error = error.message;
           watchedState.status = 'failed';
         }
+      })
+      .then(() => {
+        state.feeds.forEach((feed) => {
+          updatePosts(feed, proxyUrl);
+        });
       })
       .catch((err) => {
         watchedState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
