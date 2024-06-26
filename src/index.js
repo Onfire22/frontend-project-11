@@ -27,7 +27,6 @@ const app = (elems, state, i18nextInstance) => {
   const watchedState = onChange(state, render(elems, i18nextInstance, state));
   watchedState.status = 'initial';
   const updatePosts = (feed, proxyUrl) => {
-    watchedState.status = '';
     axios.get(proxyUrl)
       .then((response) => {
         const { posts } = parseRss(response.data.contents);
@@ -37,7 +36,6 @@ const app = (elems, state, i18nextInstance) => {
             post.id = feed.id;
             watchedState.posts.unshift(post);
           });
-        watchedState.status = 'success';
       })
       .then(() => setTimeout(updatePosts, 5000, feed, proxyUrl))
       .catch((err) => {

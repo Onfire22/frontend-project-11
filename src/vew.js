@@ -81,13 +81,15 @@ const render = (elems, i18nextInstance, state) => (path, value) => {
     }
     if (value === 'success') {
       renderSuccess(elems, i18nextInstance);
-      renderFeeds(elems, i18nextInstance, state);
-      renderPosts(elems, i18nextInstance, state);
       elems.mainBtn.disabled = false;
     }
     if (value === 'pending') {
       elems.mainBtn.disabled = true;
     }
+  }
+  if (path === 'posts') {
+    renderFeeds(elems, i18nextInstance, state);
+    renderPosts(elems, i18nextInstance, state);
   }
 };
 
