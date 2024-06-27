@@ -97,14 +97,22 @@ const init = async () => {
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
     mainBtn: document.querySelector('.btn_add'),
+    modal: document.querySelector('.modal'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalText: document.querySelector('.modal-body'),
+    readBtn: document.querySelector('.btn-primary'),
     staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],
   };
   const state = {
     feeds: [],
     posts: [],
     links: [],
-    status: '', // initial, pending!!!!!!, failed, success
+    status: '', // initial, pending, failed, success
     error: null,
+    watchedPosts: [],
+    modalState: {
+      modalOpen: false,
+    },
   };
   await i18nextInstance.init({
     lng: 'ru',
