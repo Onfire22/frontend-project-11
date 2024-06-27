@@ -1,7 +1,6 @@
 import './styles.scss';
 import 'bootstrap';
 import * as yup from 'yup';
-import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
 import { uniqueId } from 'lodash';
@@ -19,12 +18,12 @@ const isValide = (arr, data) => {
       url: () => ({ key: 'url' }),
     },
   });
-  const scheme = yup.string().url().notOneOf(arr);
+  const scheme = yup.string().trim().url().notOneOf(arr);
   return scheme.validate(data);
 };
 
 const app = (elems, state, i18nextInstance) => {
-  const watchedState = onChange(state, render(elems, i18nextInstance, state));
+  const watchedState = render(elems, i18nextInstance, state);
   watchedState.status = 'initial';
   const updatePosts = (feed, proxyUrl) => {
     axios.get(proxyUrl)
@@ -90,6 +89,7 @@ const app = (elems, state, i18nextInstance) => {
 const init = async () => {
   const i18nextInstance = i18next.createInstance();
   const elems = {
+    body: document.querySelector('body'),
     form: document.querySelector('.rss-form'),
     input: document.querySelector('#url-input'),
     feedback: document.querySelector('.feedback'),
