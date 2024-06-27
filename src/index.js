@@ -1,26 +1,12 @@
 import './styles.scss';
 import 'bootstrap';
-import * as yup from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
 import { uniqueId } from 'lodash';
 import render from './vew.js';
 import resources from './locales.js';
-import buildUrl from './helpers.js';
+import { buildUrl, isValide } from './helpers.js';
 import parseRss from './parser.js';
-
-const isValide = (arr, data) => {
-  yup.setLocale({
-    mixed: {
-      notOneOf: () => ({ key: 'unique' }),
-    },
-    string: {
-      url: () => ({ key: 'url' }),
-    },
-  });
-  const scheme = yup.string().trim().url().notOneOf(arr);
-  return scheme.validate(data);
-};
 
 const app = (elems, state, i18nextInstance) => {
   const watchedState = render(elems, i18nextInstance, state);
@@ -86,7 +72,7 @@ const app = (elems, state, i18nextInstance) => {
   });
 };
 
-const init = async () => {
+const init = () => {
   const i18nextInstance = i18next.createInstance();
   const elems = {
     body: document.querySelector('body'),
@@ -114,11 +100,10 @@ const init = async () => {
       modalOpen: false,
     },
   };
-  await i18nextInstance.init({
+  i18nextInstance.init({
     lng: 'ru',
     resources,
-  });
-  app(elems, state, i18nextInstance);
+  }).then(() => app(elems, state, i18nextInstance));
 };
 
 init();

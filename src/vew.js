@@ -1,4 +1,5 @@
 import onChange from 'on-change';
+import { setAttributes } from './helpers.js';
 
 const initialRender = (elems, i18nextInstance) => {
   elems.staticElems.forEach((elName) => {
@@ -30,9 +31,10 @@ const renderError = (elems, i18nextInstance, watchedState) => {
   elems.input.classList.add('is-invalid');
   elems.feedback.textContent = '';
   elems.feedback.textContent = i18nextInstance.t(`errors.${watchedState.error}`);
+  elems.input.focus();
 };
 
-const renderModal = (elems, i18nextInstance, watchedState, value) => {
+const renderModal = (elems, i18nextInstance, watchedState, value) => { // toDo modal!!!
   if (value) {
     elems.body.classList.add('.modal-open');
     elems.body.style = 'style="overflow: hidden; padding-right: 15px"';
@@ -82,14 +84,12 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
     listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const link = document.createElement('a');
     link.classList.add('fw-bold');
-    link.setAttribute('target', '_blank');
-    link.setAttribute('rel', 'noopener noreferrer');
-    link.setAttribute('href', postLink);
+    setAttributes(link, { target: '_blank', rel: 'noopener noreferrer', href: postLink });
     link.dataset.id = id;
     link.textContent = postTitle;
     const button = document.createElement('button');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    button.setAttribute('type', 'button');
+    setAttributes(button, { type: 'button' });
     button.textContent = i18nextInstance.t('viewBtn');
     button.dataset.id = id;
     listItem.append(link, button);
