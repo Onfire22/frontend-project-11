@@ -1,6 +1,19 @@
 import onChange from 'on-change';
 
+const initialRender = (elems, i18nextInstance) => {
+  elems.staticElems.forEach((elName) => {
+    const element = document.querySelector(`.${elName}`);
+    element.textContent = i18nextInstance.t(elName);
+  });
+};
+
+const feelingRender = (elems) => {
+  elems.feedback.textContent = '';
+  elems.input.classList.remove('is-invalid');
+};
+
 const renderSuccess = (elems, i18nextInstance) => {
+  elems.mainBtn.disabled = false;
   elems.feedback.classList.remove('text-danger');
   elems.feedback.classList.add('text-success');
   elems.input.classList.remove('is-invalid');
@@ -11,6 +24,7 @@ const renderSuccess = (elems, i18nextInstance) => {
 };
 
 const renderError = (elems, i18nextInstance, watchedState) => {
+  elems.mainBtn.disabled = false;
   elems.feedback.classList.remove('text-success');
   elems.feedback.classList.add('text-danger');
   elems.input.classList.add('is-invalid');
@@ -85,33 +99,43 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
   elems.posts.append(feedsCard);
 };
 
+const renderStatus = (elems, value, watchedState, i18nextInstance) => {
+  switch (value) {
+    case 'initial':
+      initialRender(elems, i18nextInstance);
+      break;
+    case 'feeling':
+      feelingRender(elems);
+      break;
+    case 'failed':
+      renderError(elems, i18nextInstance, watchedState);
+      break;
+    case 'success':
+      renderSuccess(elems, i18nextInstance);
+      break;
+    case 'pending':
+      elems.mainBtn.disabled = true;
+      break;
+    default:
+      break;
+  }
+};
+
 const render = (elems, i18nextInstance, state) => {
   const watchedState = onChange(state, (path, value) => {
-    if (path === 'status') {
-      if (value === 'initial') {
-        elems.staticElems.forEach((elName) => {
-          const element = document.querySelector(`.${elName}`);
-          element.textContent = i18nextInstance.t(elName);
-        });
-      }
-      if (value === 'failed') {
-        renderError(elems, i18nextInstance, watchedState);
-        elems.mainBtn.disabled = false;
-      }
-      if (value === 'success') {
-        renderSuccess(elems, i18nextInstance);
-        elems.mainBtn.disabled = false;
-      }
-      if (value === 'pending') {
-        elems.mainBtn.disabled = true;
-      }
-    }
-    if (path === 'posts') {
-      renderFeeds(elems, i18nextInstance, watchedState);
-      renderPosts(elems, i18nextInstance, watchedState);
-    }
-    if (path === 'modalState.modalOpen') {
-      renderModal(elems, i18nextInstance, watchedState, value);
+    switch (path) {
+      case 'status':
+        renderStatus(elems, value, watchedState, i18nextInstance);
+        break;
+      case 'posts':
+        renderFeeds(elems, i18nextInstance, watchedState);
+        renderPosts(elems, i18nextInstance, watchedState);
+        break;
+      case 'modalState.modalOpen':
+        renderModal(elems, i18nextInstance, watchedState, value);
+        break;
+      default:
+        break;
     }
   });
   return watchedState;
