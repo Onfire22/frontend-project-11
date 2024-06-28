@@ -1,4 +1,6 @@
 import onChange from 'on-change';
+import { Modal } from 'bootstrap';
+import { uniqueId } from 'lodash';
 import { setAttributes } from './helpers.js';
 
 const initialRender = (elems, i18nextInstance) => {
@@ -34,15 +36,12 @@ const renderError = (elems, i18nextInstance, watchedState) => {
   elems.input.focus();
 };
 
-const renderModal = (elems, i18nextInstance, watchedState, value) => { // toDo modal!!!
-  if (value) {
-    elems.body.classList.add('.modal-open');
-    elems.body.style = 'style="overflow: hidden; padding-right: 15px"';
-    elems.modal.classList.add('show');
-    elems.modal.removeAttribute('aria-hidden');
-    elems.modal.setAttribute('aria-modal', 'true');
-    elems.modal.style = 'display: block';
-  }
+const renderModal = (elems, value) => { // toDo modal!!!
+  const modal = new Modal(document.querySelector('#modal'));
+  elems.modalTitle.textContent = value.postTitle;
+  elems.modalText.textContent = value.postDescription;
+  setAttributes(elems.readBtn, { href: value.postLink });
+  modal.show();
 };
 
 const renderFeeds = (elems, i18nextInstance, watchedState) => {
@@ -75,11 +74,16 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
   const list = feedsCard.querySelector('.list-group');
   list.addEventListener('click', ({ target }) => {
     if (target.classList.contains('btn')) {
-      watchedState.modalState.modalOpen = true;
+      target.previousSibling.classList.add('fw-normal', 'link-secondary');
+      target.previousSibling.classList.remove('fw-bold');
+      const targetTitle = target.previousSibling.textContent;
+      const targetPost = watchedState.posts.find(({ postTitle }) => postTitle === targetTitle);
+      watchedState.watchedPost = targetPost;
     }
   });
   watchedState.posts.forEach((post) => {
-    const { id, postTitle, postLink } = post;
+    const { postTitle, postLink } = post;
+    const id = uniqueId();
     const listItem = document.createElement('li');
     listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const link = document.createElement('a');
@@ -131,8 +135,8 @@ const render = (elems, i18nextInstance, state) => {
         renderFeeds(elems, i18nextInstance, watchedState);
         renderPosts(elems, i18nextInstance, watchedState);
         break;
-      case 'modalState.modalOpen':
-        renderModal(elems, i18nextInstance, watchedState, value);
+      case 'watchedPost':
+        renderModal(elems, value);
         break;
       default:
         break;
