@@ -32,7 +32,7 @@ const renderError = (elems, i18nextInstance, watchedState) => {
   elems.feedback.classList.add('text-danger');
   elems.input.classList.add('is-invalid');
   elems.feedback.textContent = '';
-  elems.feedback.textContent = i18nextInstance.t(`errors.${watchedState.error}`);
+  elems.feedback.textContent = i18nextInstance.t(`errors.${watchedState.formState.error}`);
   elems.input.focus();
 };
 
@@ -50,7 +50,7 @@ const renderFeeds = (elems, i18nextInstance, watchedState) => {
   const cardTitle = feedsCard.querySelector('.card-title');
   const list = feedsCard.querySelector('.list-group');
   cardTitle.textContent = i18nextInstance.t('feeds');
-  watchedState.feeds.forEach(({ title, description }) => {
+  watchedState.formState.feeds.forEach(({ title, description }) => {
     const listItem = document.createElement('li');
     listItem.classList.add('list-group-item', 'border-0', 'border-end-0');
     const listTitle = document.createElement('h3');
@@ -77,11 +77,12 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
       target.previousSibling.classList.add('fw-normal', 'link-secondary');
       target.previousSibling.classList.remove('fw-bold');
       const targetTitle = target.previousSibling.textContent;
-      const targetPost = watchedState.posts.find(({ postTitle }) => postTitle === targetTitle);
-      watchedState.watchedPost = targetPost;
+      const targetPost = watchedState.formState.posts
+        .find(({ postTitle }) => postTitle === targetTitle);
+      watchedState.formState.watchedPost = targetPost;
     }
   });
-  watchedState.posts.forEach((post) => {
+  watchedState.formState.posts.forEach((post) => {
     const { postTitle, postLink } = post;
     const id = uniqueId();
     const listItem = document.createElement('li');
@@ -128,14 +129,14 @@ const renderStatus = (elems, value, watchedState, i18nextInstance) => {
 const render = (elems, i18nextInstance, state) => {
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
-      case 'status':
+      case 'formState.status':
         renderStatus(elems, value, watchedState, i18nextInstance);
         break;
-      case 'posts':
+      case 'formState.posts':
         renderFeeds(elems, i18nextInstance, watchedState);
         renderPosts(elems, i18nextInstance, watchedState);
         break;
-      case 'watchedPost':
+      case 'formState.watchedPost':
         renderModal(elems, value);
         break;
       default:
