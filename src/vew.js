@@ -74,9 +74,11 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
   const list = feedsCard.querySelector('.list-group');
   list.addEventListener('click', ({ target }) => {
     if (target.classList.contains('btn')) {
-      target.previousSibling.classList.add('fw-normal', 'link-secondary');
-      target.previousSibling.classList.remove('fw-bold');
-      const targetTitle = target.previousSibling.textContent;
+      const btnId = target.dataset.id;
+      const targetLink = document.querySelector(`[data-id="${btnId}"]`);
+      targetLink.classList.add('fw-normal', 'link-secondary');
+      targetLink.classList.remove('fw-bold');
+      const targetTitle = targetLink.textContent;
       const targetPost = watchedState.formState.posts
         .find(({ postTitle }) => postTitle === targetTitle);
       watchedState.formState.watchedPost = targetPost;

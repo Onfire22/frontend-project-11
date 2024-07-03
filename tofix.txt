@@ -10,10 +10,6 @@ https://github.com/Onfire22/frontend-project-11/blob/3f411215c24fc6e6805d5e96a52
 
 можно один раз повесить на общий блок и не рендерить каждый раз
 
-https://github.com/Onfire22/frontend-project-11/blob/3f411215c24fc6e6805d5e96a520613898443c5f/src/vew.js#L79-L80
-
-для уникальности более правильно это делать по id
-
 https://github.com/Onfire22/frontend-project-11/blob/3f411215c24fc6e6805d5e96a520613898443c5f/src/index.js#L25-L29
 
 а если ошибка в запросе? цепочка прервется . посмотри finally у промисов
