@@ -27,7 +27,8 @@ export default (elems, state, i18nextInstance) => {
     e.preventDefault();
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
-    const validePromise = isValide(watchedState.formState.links, elems.input.value);
+    const links = watchedState.formState.feeds.map((feed) => feed.userUrl);
+    const validePromise = isValide(links, elems.input.value);
     validePromise.then(() => {
       watchedState.formState.error = null;
       watchedState.formState.status = 'pending';
