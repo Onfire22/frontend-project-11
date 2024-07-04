@@ -10,8 +10,8 @@ export default (elems, state, i18nextInstance) => {
   const updatePosts = (feed, proxyUrl) => {
     axios.get(proxyUrl)
       .then((response) => {
-        const { posts } = parseRss(response.data.contents);
-        posts.filter((post) => !watchedState.formState.posts
+        const { items } = parseRss(response.data.contents);
+        items.filter((post) => !watchedState.formState.posts
           .some((oldPost) => post.postTitle === oldPost.postTitle))
           .forEach((post) => {
             post.id = feed.id;
@@ -35,12 +35,13 @@ export default (elems, state, i18nextInstance) => {
     })
       .then((response) => {
         try {
-          const { feed, posts } = parseRss(response.data.contents);
+          const { title, description, items } = parseRss(response.data.contents);
           const id = uniqueId();
-          feed.id = id;
-          watchedState.formState.links.push(userUrl);
+          const feed = {
+            title, description, id, userUrl,
+          };
           watchedState.formState.feeds.push(feed);
-          posts.forEach((post) => {
+          items.forEach((post) => {
             post.id = id;
             watchedState.formState.posts.push(post);
           });
