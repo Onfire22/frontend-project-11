@@ -23,7 +23,6 @@ const init = () => {
     formState: {
       feeds: [],
       posts: [],
-      links: [],
       status: '', // initial, pending, failed, success
       error: null,
     },

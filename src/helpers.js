@@ -14,7 +14,8 @@ const setAttributes = (elem, attributes) => {
   });
 };
 
-const isValide = (arr, data) => {
+const isValide = (feeds, data) => {
+  const links = feeds.map(({ userUrl }) => userUrl);
   yup.setLocale({
     mixed: {
       notOneOf: () => ({ key: 'unique' }),
@@ -23,7 +24,7 @@ const isValide = (arr, data) => {
       url: () => ({ key: 'url' }),
     },
   });
-  const scheme = yup.string().trim().url().notOneOf(arr);
+  const scheme = yup.string().url().notOneOf(links);
   return scheme.validate(data);
 };
 

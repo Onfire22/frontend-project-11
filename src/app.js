@@ -7,18 +7,23 @@ import parseRss from './parser.js';
 export default (elems, state, i18nextInstance) => {
   const watchedState = render(elems, i18nextInstance, state);
   watchedState.formState.status = 'initial';
-  const updatePosts = (feed, proxyUrl) => {
-    axios.get(proxyUrl)
+  const updatePosts = (model) => {
+    const promises = model.formState.feeds.map(({ userUrl, id }) => axios.get(buildUrl(userUrl))
       .then((response) => {
         const { items } = parseRss(response.data.contents);
-        items.filter((post) => !watchedState.formState.posts
+        items.filter((post) => !model.formState.posts
           .some((oldPost) => post.postTitle === oldPost.postTitle))
           .forEach((post) => {
-            post.id = feed.id;
-            watchedState.formState.posts.unshift(post);
+            post.id = id;
+            model.formState.posts.unshift(post);
           });
+      }));
+    Promise.all(promises)
+      .catch((err) => {
+        watchedState.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
+        watchedState.formState.status = 'failed';
       })
-      .finally(setTimeout(updatePosts, 5000, feed, proxyUrl));
+      .finally(setTimeout(updatePosts, 5000, model));
   };
   elems.input.addEventListener('input', () => {
     watchedState.formState.status = 'feeling';
@@ -27,8 +32,7 @@ export default (elems, state, i18nextInstance) => {
     e.preventDefault();
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
-    const links = watchedState.formState.feeds.map((feed) => feed.userUrl);
-    const validePromise = isValide(links, elems.input.value);
+    const validePromise = isValide(watchedState.formState.feeds, elems.input.value);
     validePromise.then(() => {
       watchedState.formState.error = null;
       watchedState.formState.status = 'pending';
@@ -52,14 +56,10 @@ export default (elems, state, i18nextInstance) => {
           watchedState.formState.status = 'failed';
         }
       })
-      .then(() => {
-        watchedState.formState.feeds.forEach((feed) => {
-          updatePosts(feed, proxyUrl);
-        });
-      })
       .catch((err) => {
         watchedState.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
         watchedState.formState.status = 'failed';
       });
   });
+  updatePosts(watchedState);
 };
