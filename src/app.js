@@ -18,11 +18,7 @@ export default (elems, state, i18nextInstance) => {
             watchedState.formState.posts.unshift(post);
           });
       })
-      .then(() => setTimeout(updatePosts, 5000, feed, proxyUrl))
-      .catch((err) => {
-        watchedState.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
-        watchedState.formState.status = 'failed';
-      });
+      .finally(setTimeout(updatePosts, 5000, feed, proxyUrl));
   };
   elems.input.addEventListener('input', () => {
     watchedState.formState.status = 'feeling';

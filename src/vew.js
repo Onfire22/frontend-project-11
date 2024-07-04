@@ -36,7 +36,7 @@ const renderError = (elems, i18nextInstance, watchedState) => {
   elems.input.focus();
 };
 
-const renderModal = (elems, value) => { // toDo modal!!!
+const renderModal = (elems, value) => {
   const modal = new Modal(document.querySelector('#modal'));
   elems.modalTitle.textContent = value.postTitle;
   elems.modalText.textContent = value.postDescription;
@@ -72,7 +72,7 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
   const cardTitle = feedsCard.querySelector('.card-title');
   cardTitle.textContent = i18nextInstance.t('posts');
   const list = feedsCard.querySelector('.list-group');
-  list.addEventListener('click', ({ target }) => {
+  elems.posts.addEventListener('click', ({ target }) => {
     if (target.classList.contains('btn')) {
       const btnId = target.dataset.id;
       const targetLink = document.querySelector(`[data-id="${btnId}"]`);
@@ -81,7 +81,7 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
       const targetTitle = targetLink.textContent;
       const targetPost = watchedState.formState.posts
         .find(({ postTitle }) => postTitle === targetTitle);
-      watchedState.formState.watchedPost = targetPost;
+      watchedState.modalState.watchedPost = targetPost;
     }
   });
   watchedState.formState.posts.forEach((post) => {
@@ -129,23 +129,23 @@ const renderStatus = (elems, value, watchedState, i18nextInstance) => {
 };
 
 const render = (elems, i18nextInstance, state) => {
-  const watchedState = onChange(state, (path, value) => {
+  const view = onChange(state, (path, value) => {
     switch (path) {
       case 'formState.status':
-        renderStatus(elems, value, watchedState, i18nextInstance);
+        renderStatus(elems, value, view, i18nextInstance);
         break;
       case 'formState.posts':
-        renderFeeds(elems, i18nextInstance, watchedState);
-        renderPosts(elems, i18nextInstance, watchedState);
+        renderFeeds(elems, i18nextInstance, view);
+        renderPosts(elems, i18nextInstance, view);
         break;
-      case 'formState.watchedPost':
+      case 'modalState.watchedPost':
         renderModal(elems, value);
         break;
       default:
         break;
     }
   });
-  return watchedState;
+  return view;
 };
 
 export default render;

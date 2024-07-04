@@ -27,7 +27,9 @@ const init = () => {
       status: '', // initial, pending, failed, success
       error: null,
     },
-    watchedPost: '',
+    modalState: {
+      watchedPost: '',
+    },
   };
   i18nextInstance.init({
     lng: 'ru',

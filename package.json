@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "autoprefixer": "^10.4.19",
     "css-loader": "^7.1.2",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",

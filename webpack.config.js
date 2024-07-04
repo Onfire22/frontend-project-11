@@ -1,6 +1,8 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import autoprefixer from 'autoprefixer';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -12,27 +14,27 @@ export default {
         test: /\.(scss)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
           },
           {
-            loader: 'css-loader'
+            loader: 'css-loader',
           },
           {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
                 plugins: () => [
-                  require('autoprefixer')
-                ]
-              }
-            }
+                  autoprefixer,
+                ],
+              },
+            },
           },
           {
-            loader: 'sass-loader'
-          }
-        ]
-      }
-    ]
+            loader: 'sass-loader',
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
