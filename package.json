@@ -5,7 +5,8 @@
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
-    "serve": "webpack serve --live-reload"
+    "serve": "webpack serve --live-reload",
+    "build": "npm run build"
   },
   "keywords": [],
   "author": "",
