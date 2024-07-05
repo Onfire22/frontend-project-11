@@ -5,8 +5,8 @@ import { buildUrl, isValide } from './helpers.js';
 import parseRss from './parser.js';
 
 export default (elems, state, i18nextInstance) => {
-  const watchedState = render(elems, i18nextInstance, state);
-  watchedState.formState.status = 'initial';
+  const view = render(elems, i18nextInstance, state);
+  view.formState.status = 'initial';
   const updatePosts = (model) => {
     const promises = model.formState.feeds.map(({ userUrl, id }) => axios.get(buildUrl(userUrl))
       .then((response) => {
@@ -20,22 +20,22 @@ export default (elems, state, i18nextInstance) => {
       }));
     Promise.all(promises)
       .catch((err) => {
-        watchedState.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
-        watchedState.formState.status = 'failed';
+        view.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
+        view.formState.status = 'failed';
       })
       .finally(setTimeout(updatePosts, 5000, model));
   };
   elems.input.addEventListener('input', () => {
-    watchedState.formState.status = 'feeling';
+    view.formState.status = 'feeling';
   });
   elems.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
-    const validePromise = isValide(watchedState.formState.feeds, elems.input.value);
+    const validePromise = isValide(view.formState.feeds, elems.input.value);
     validePromise.then(() => {
-      watchedState.formState.error = null;
-      watchedState.formState.status = 'pending';
+      view.formState.error = null;
+      view.formState.status = 'pending';
       return axios.get(proxyUrl);
     })
       .then((response) => {
@@ -45,21 +45,21 @@ export default (elems, state, i18nextInstance) => {
           const feed = {
             title, description, id, userUrl,
           };
-          watchedState.formState.feeds.push(feed);
+          view.formState.feeds.push(feed);
           items.forEach((post) => {
             post.id = id;
-            watchedState.formState.posts.push(post);
+            view.formState.posts.push(post);
           });
-          watchedState.formState.status = 'success';
+          view.formState.status = 'success';
         } catch (error) {
-          watchedState.formState.error = error.message;
-          watchedState.formState.status = 'failed';
+          view.formState.error = error.message;
+          view.formState.status = 'failed';
         }
       })
       .catch((err) => {
-        watchedState.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
-        watchedState.formState.status = 'failed';
+        view.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
+        view.formState.status = 'failed';
       });
   });
-  updatePosts(watchedState);
+  updatePosts(view);
 };
