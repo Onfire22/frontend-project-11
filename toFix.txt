@@ -1,0 +1,31 @@
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/index.js#L26
+
+Процесс всегда в каком то состоянии, он не может быть пустой строкой
+
+и вот этот хак сразу не потребуется
+
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/app.js#L9
+
+
+
+
+
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/index.js#L30
+
+Почему пустая строка? Что это значит?
+
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/app.js#L29
+
+зачем по вводу?
+
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/app.js#L24
+
+Это отдельный процесс обновления у него собственный жизненный цикл и статусы, почему он меняет статус связанный с формой?
+
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/app.js#L36
+
+валидация асинхронная операция и в теории может длится сколько угодно долго, после клика пользователь не будет понимать что происходит
+
+https://github.com/Onfire22/frontend-project-11/blob/db3badac2eb42e06d156f22eec8162a234766b57/src/app.js#L29
+
+тут можно посмотреть как в эталонно проекте поведение, все проверки только на сабмите

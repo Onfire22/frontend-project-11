@@ -50,7 +50,7 @@ const renderFeeds = (elems, i18nextInstance, watchedState) => {
   const cardTitle = feedsCard.querySelector('.card-title');
   const list = feedsCard.querySelector('.list-group');
   cardTitle.textContent = i18nextInstance.t('feeds');
-  watchedState.formState.feeds.forEach(({ title, description }) => {
+  watchedState.feeds.forEach(({ title, description }) => {
     const listItem = document.createElement('li');
     listItem.classList.add('list-group-item', 'border-0', 'border-end-0');
     const listTitle = document.createElement('h3');
@@ -79,12 +79,12 @@ const renderPosts = (elems, i18nextInstance, watchedState) => {
       targetLink.classList.add('fw-normal', 'link-secondary');
       targetLink.classList.remove('fw-bold');
       const targetTitle = targetLink.textContent;
-      const targetPost = watchedState.formState.posts
+      const targetPost = watchedState.posts
         .find(({ postTitle }) => postTitle === targetTitle);
       watchedState.modalState.watchedPost = targetPost;
     }
   });
-  watchedState.formState.posts.forEach((post) => {
+  watchedState.posts.forEach((post) => {
     const { postTitle, postLink } = post;
     const id = uniqueId();
     const listItem = document.createElement('li');
@@ -134,7 +134,7 @@ const render = (elems, i18nextInstance, state) => {
       case 'formState.status':
         renderStatus(elems, value, view, i18nextInstance);
         break;
-      case 'formState.posts':
+      case 'posts':
         renderFeeds(elems, i18nextInstance, view);
         renderPosts(elems, i18nextInstance, view);
         break;

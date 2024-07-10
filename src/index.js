@@ -20,9 +20,9 @@ const init = () => {
     staticElems: ['title', 'subtitle', 'label', 'btn_add', 'hint'],
   };
   const state = {
+    feeds: [],
+    posts: [],
     formState: {
-      feeds: [],
-      posts: [],
       status: '', // initial, pending, failed, success
       error: null,
     },
