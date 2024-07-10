@@ -129,6 +129,7 @@ const renderStatus = (elems, value, watchedState, i18nextInstance) => {
 };
 
 const render = (elems, i18nextInstance, state) => {
+  initialRender(elems, i18nextInstance);
   const view = onChange(state, (path, value) => {
     switch (path) {
       case 'formState.status':

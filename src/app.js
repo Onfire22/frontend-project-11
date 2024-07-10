@@ -6,7 +6,7 @@ import parseRss from './parser.js';
 
 export default (elems, state, i18nextInstance) => {
   const view = render(elems, i18nextInstance, state);
-  view.formState.status = 'initial';
+  // view.formState.status = 'initial';
   const updatePosts = (model) => {
     const promises = model.feeds.map(({ userUrl, id }) => axios.get(buildUrl(userUrl))
       .then((response) => {
@@ -25,11 +25,9 @@ export default (elems, state, i18nextInstance) => {
       })
       .finally(setTimeout(updatePosts, 5000, model));
   };
-  elems.input.addEventListener('input', () => {
-    view.formState.status = 'feeling';
-  });
   elems.form.addEventListener('submit', (e) => {
     e.preventDefault();
+    view.formState.status = 'feeling';
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
     const validePromise = isValide(view.feeds, elems.input.value);

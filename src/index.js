@@ -23,11 +23,11 @@ const init = () => {
     feeds: [],
     posts: [],
     formState: {
-      status: '', // initial, pending, failed, success
+      status: 'feeling', // initial, pending, failed, success
       error: null,
     },
     modalState: {
-      watchedPost: '',
+      watchedPost: null,
     },
   };
   i18nextInstance.init({
