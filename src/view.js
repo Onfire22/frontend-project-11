@@ -132,6 +132,7 @@ const render = (elems, i18nextInstance, state) => {
   initialRender(elems, i18nextInstance);
   const view = onChange(state, (path, value) => {
     switch (path) {
+      case 'updateStatus':
       case 'formState.status':
         renderStatus(elems, value, view, i18nextInstance);
         break;

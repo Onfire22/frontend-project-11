@@ -29,6 +29,7 @@ const init = () => {
     modalState: {
       watchedPost: null,
     },
+    updateStatus: 'initial', // failed
   };
   i18nextInstance.init({
     lng: 'ru',

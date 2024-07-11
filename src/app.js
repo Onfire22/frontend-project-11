@@ -6,8 +6,8 @@ import parseRss from './parser.js';
 
 export default (elems, state, i18nextInstance) => {
   const view = render(elems, i18nextInstance, state);
-  // view.formState.status = 'initial';
   const updatePosts = (model) => {
+    view.updateStatus = 'initial';
     const promises = model.feeds.map(({ userUrl, id }) => axios.get(buildUrl(userUrl))
       .then((response) => {
         const { items } = parseRss(response.data.contents);
@@ -21,7 +21,7 @@ export default (elems, state, i18nextInstance) => {
     Promise.all(promises)
       .catch((err) => {
         view.formState.error = err.name === 'ValidationError' ? err.type : 'AxiosError';
-        view.formState.status = 'failed';
+        view.updateStatus = 'failed';
       })
       .finally(setTimeout(updatePosts, 5000, model));
   };
@@ -30,10 +30,10 @@ export default (elems, state, i18nextInstance) => {
     view.formState.status = 'feeling';
     const userUrl = elems.input.value;
     const proxyUrl = buildUrl(userUrl);
+    view.formState.status = 'pending';
     const validePromise = isValide(view.feeds, elems.input.value);
     validePromise.then(() => {
       view.formState.error = null;
-      view.formState.status = 'pending';
       return axios.get(proxyUrl);
     })
       .then((response) => {
